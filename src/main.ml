@@ -1,6 +1,3 @@
-type game
-external game : game = "Game" [@@bs.val]
-
 
 let loop () = 
-    Js.log game##spawns
+    Js.log (Helper.find_spawn "Spawn1")
