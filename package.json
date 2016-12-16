@@ -1,0 +1,18 @@
+{
+  "name": "screeps-scripts",
+  "version": "0.0.1",
+  "description": "Paul's screeps scripts",
+  "scripts": {
+    "build": "bsb",
+    "watch": "bsb -w"
+  },
+  "keywords": [
+    "screeps"
+  ],
+  "author": "Paul Carleton",
+  "license": "MIT",
+  "dependencies": {
+    "bs-platform": "1.3.3",
+    "grunt-screeps": "^1.2.1"
+  }
+}
