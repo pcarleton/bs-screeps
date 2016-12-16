@@ -3,3 +3,8 @@ lib
 dist
 *.cmj
 *.cmi
+npm-debug.log
+
+# Ignore the gruntfile since it has my password
+# TODO: Create separate user/pass file
+Gruntfile.js
