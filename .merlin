@@ -1,6 +1,9 @@
-S src
-
+S src/
 B lib/bs/src
+
 B node_modules/bs-platform/lib/ocaml
+S node_modules/bs-platform/lib/ocaml
+
+FLG -ppx /home/paul/screeps/scripts/node_modules/bs-platform/bin/bsppx.exe
 
 
