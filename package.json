@@ -5,7 +5,8 @@
   "scripts": {
     "build": "bsb",
     "watch": "bsb -w",
-    "start": "webpack --config webpack.config.js"
+    "start": "webpack --config webpack.config.js",
+    "deploy": "npm run start && grunt screeps"
   },
   "keywords": [
     "screeps"

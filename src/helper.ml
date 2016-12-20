@@ -2,7 +2,7 @@ type spawns
 
 
 class type _spawn = object
-    method createCreep : string array -> string -> int [@bs.meth]
+    method createCreep : string array -> string -> 'a Js.t -> int [@bs.meth]
 end [@bs]
 
 type spawn = _spawn Js.t
@@ -48,10 +48,10 @@ end [@bs]
 
 type game = _game Js.t
 
-external game : game = "Game" [@@bs.val]
+external extGame : game = "Game" [@@bs.val]
 
 (* external get_spawns : game -> spawns = "spawns" [@@bs.get] *)
-external get_spawn : spawns -> string -> spawn = "" [@@bs.get_index]
+external get_spawn : spawns -> string -> spawn Js.undefined = "" [@@bs.get_index]
 external get_creep : creepsObj -> string -> creep = "" [@@bs.get_index]
 
 class type _obj = object
@@ -65,7 +65,7 @@ external obj : obj = "Object" [@@bs.val]
 
 let keys a = obj##keys a
 
-let find_spawn name =
+let find_spawn game name =
     get_spawn (game##spawns) name
 
 
@@ -75,7 +75,7 @@ let arrayFilt : ('a -> bool) -> 'a array -> 'a array = fun filterfn arr ->
     Array.of_list fls
 
 
-let creepsOfType ctype =
+let creepsOfType game ctype =
     let cObj = game##creeps in
     let names = keys cObj in
     let creeps = Array.map (fun n -> get_creep cObj n) names
