@@ -1,5 +1,5 @@
 
-let spawnCreep : Helper.spawn -> string -> string array -> string -> int  = 
+(*let spawnCreep : Helper.spawn -> string -> string array -> string -> int  = 
     fun sp name parts role -> 
         sp##createCreep parts name [%bs.obj {role = role}]
 
@@ -24,4 +24,7 @@ let run_loop game =
 
 let loop () =
     run_loop Helper.extGame
+*)
 
+let loop () = 
+    Planner.executePlan ()
