@@ -12,6 +12,7 @@ class type _extCreep = object
 end [@bs]
 type extCreep = _extCreep Js.t
 
+(* A javascript object used as a map *)
 type 'a objsH
 
 class type _game = object
@@ -23,14 +24,10 @@ type extGame = _game Js.t
 
 external globalGame : extGame= "Game" [@@bs.val]
 
-
+(* Get the keys of a javascript object used as a map *)
 external objKeys : 'a objsH -> string array [@bs] = "Object.keys" [@@bs.val]
-(* This shouldn't be necessary... I don't know why it doesn't
- * work with the above one *)
-(* let spVals : 'a objsH -> 'a array = [%bs.raw "Object.values" ] *)
 
-
-
+(* Get a particular object out of a javascript object by name *)
 external getObj : 'a objsH -> string -> 'a Js.undefined = "" [@@bs.get_index]
 
 let convCreep c = 
@@ -40,6 +37,16 @@ let convCreep c =
 let convSpawn : extSpawn -> Types.Spawn.t = fun s ->
     let open Types.Spawn in
     {name = s##name; energy = s##energy}
+
+let getMap obj =
+    let keys = objKeys obj [@bs] in
+    let foldfn acc key =
+        let opt = getObj obj key in 
+        match Js.Undefined.to_opt opt with
+            | None -> acc
+            | Some s -> Types.StringMap.add key s acc
+    in 
+        List.fold_left foldfn Types.StringMap.empty (Array.to_list keys)
 
 let getVals obj =
     let keys = objKeys obj [@bs] in
@@ -52,9 +59,10 @@ let getVals obj =
         Array.of_list (List.fold_left foldfn []
             (Array.to_list keys))
 
+
 let convertExternal : extGame -> Types.GameState.t = fun g ->
     let creeps = Array.map convCreep (getVals g##creeps) in
-    let spawns = Array.map convSpawn (getVals g##spawns) in
+    let spawns = Types.StringMap.map convSpawn (getMap g##spawns) in
         let open Types.GameState in
         { creeps; spawns }
 
