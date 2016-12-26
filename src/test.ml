@@ -47,6 +47,30 @@ let applySingleAction game (name, action) =
     else
         game
 
+open Spawn
+let advanceSpawn spawn =
+    match spawn.spawning with
+    | None -> spawn
+    | Some spinfo ->
+        let newRemaining = spinfo.remainingTime - 1 in
+        match newRemaining with
+        | 0 -> 
+            Js.log "Spawn complete!";
+            {spawn with spawning = None}
+        | _ ->
+            let newSpinfo = {spinfo with remainingTime = newRemaining} in
+            {spawn with spawning = Some newSpinfo}
+            
+
+open GameState
+let advanceSpawns game = 
+    let newSpawns =
+        StringMap.map advanceSpawn game.spawns
+    in
+    {game with spawns = newSpawns}
+
+let tick game =
+    advanceSpawns game
 
 let makePlayerChanges game = 
     let spawnPlan = Action.makeSpawnActions game in
@@ -57,8 +81,9 @@ let testRun () =
     let game = addSpawn emptyGame {name = "Spawn1"; energy = 300;
                                     spawning = None} in
     let gameRef = ref game in
-    for i = 0 to 5 do
-        gameRef := (makePlayerChanges !gameRef)
+    for i = 0 to 20 do
+        gameRef := (makePlayerChanges !gameRef);
+        gameRef := (tick !gameRef)
     done
 
 let () =

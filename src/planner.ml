@@ -2,9 +2,11 @@
 let logSpawning game =
     let open Types.Spawn in 
     let open Types.GameState in 
+    let open Types.Creep in 
     Types.StringMap.iter (fun _ spawn ->
         Js.log spawn.spawning
-    ) game.spawns
+    ) game.spawns;
+    Array.iter (fun c -> Js.log c.name) game.creeps
 
 let executePlan () = 
     let game = Converter.convertGlobal () in
