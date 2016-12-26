@@ -1,8 +1,11 @@
 
+type jsRecord
+
 class type _extSpawn = object
     method name: string
     method energy: int
     method createCreep : string array -> string -> 'a Js.t -> int [@bs.meth]
+    method spawning : jsRecord Js.null
 end [@bs]
 
 type extSpawn = _extSpawn Js.t
@@ -30,13 +33,25 @@ external objKeys : 'a objsH -> string array [@bs] = "Object.keys" [@@bs.val]
 (* Get a particular object out of a javascript object by name *)
 external getObj : 'a objsH -> string -> 'a Js.undefined = "" [@@bs.get_index]
 
+external getInt : jsRecord -> string -> int = "" [@@bs.get_index]
+external getStr : jsRecord -> string -> string = "" [@@bs.get_index]
+
 let convCreep c = 
     let open Types.Creep in
     {name = c##name}
 
 let convSpawn : extSpawn -> Types.Spawn.t = fun s ->
     let open Types.Spawn in
-    {name = s##name; energy = s##energy}
+    let spinfo = s##spawning in
+    let spawning = 
+        match Js.Null.to_opt spinfo with
+            | None -> None
+            | Some s -> Some {
+                name = getStr s "name";
+                needTime = getInt s "needTime";
+                remainingTime = getInt s "remainingTime";
+    } in
+    {name = s##name; energy = s##energy; spawning}
 
 let getMap obj =
     let keys = objKeys obj [@bs] in

@@ -1,6 +1,16 @@
-(* type spawn = {name : string; energy : int} *)
+
 module Spawn = struct
-    type t = {name : string; energy : int }
+    type spawnInfo = {
+        name: string;
+        needTime: int;
+        remainingTime: int;
+    }
+
+    type t = {
+        name : string;
+        energy : int;
+        spawning : spawnInfo option
+    }
 end
 
 module Creep = struct
